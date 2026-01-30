@@ -1,7 +1,7 @@
 const express = require("express");
 const cartRouter = express.Router();
 
-cartRouter.post("/add", (req, res) => {
+cartRouter.post("/", (req, res) => {
     res.send("Add to cart");
 });
 

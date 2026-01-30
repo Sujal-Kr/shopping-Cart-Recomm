@@ -1,8 +1,11 @@
 const express = require("express");
-const cartRouter = express.Router();
+const protectRoute = require("../middleware/auth");
 
-cartRouter.post("/add", (req, res) => {
-    res.send("Add to cart");
-});
+const { createProduct, createBulkProducts } = require("../controllers/product.controller");
+const productRouter = express.Router();
 
-module.exports = cartRouter;
+productRouter.use(protectRoute)
+productRouter.post("/", createProduct);
+// productRouter.post("/bulk", createBulkProducts); one time use
+
+module.exports = productRouter;
