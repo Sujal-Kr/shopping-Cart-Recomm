@@ -11,10 +11,7 @@ const sportsProducts = [
         reviewCount: 2843,
         inStock: true,
         priceRange: "$100-$150",
-        views: 15420,
-        clicks: 3240,
-        purchases: 892,
-        embedding: []
+        
     },
     {
         name: "Adidas Tiro 23 Training Pants",
@@ -28,10 +25,6 @@ const sportsProducts = [
         reviewCount: 1567,
         inStock: true,
         priceRange: "$40-$50",
-        views: 8932,
-        clicks: 1876,
-        purchases: 543,
-        embedding: []
     },
     {
         name: "Wilson Evolution Indoor Basketball",
@@ -45,10 +38,6 @@ const sportsProducts = [
         reviewCount: 3291,
         inStock: true,
         priceRange: "$60-$70",
-        views: 12453,
-        clicks: 2987,
-        purchases: 1124,
-        embedding: []
     },
     {
         name: "Yonex Badminton Racket - Nanoray Series",
@@ -62,10 +51,7 @@ const sportsProducts = [
         reviewCount: 892,
         inStock: true,
         priceRange: "$80-$100",
-        views: 5621,
-        clicks: 1243,
-        purchases: 378,
-        embedding: []
+        
     },
     {
         name: "Speedo Vanquisher 2.0 Swim Goggles",
@@ -79,10 +65,6 @@ const sportsProducts = [
         reviewCount: 2156,
         inStock: true,
         priceRange: "$15-$25",
-        views: 9874,
-        clicks: 2341,
-        purchases: 876,
-        embedding: []
     },
     {
         name: "Manduka PRO Yoga Mat",
@@ -96,10 +78,6 @@ const sportsProducts = [
         reviewCount: 4521,
         inStock: true,
         priceRange: "$100-$150",
-        views: 18932,
-        clicks: 4231,
-        purchases: 1543,
-        embedding: []
     },
     {
         name: "Callaway Golf Club Set - 11 Piece",
@@ -113,10 +91,6 @@ const sportsProducts = [
         reviewCount: 1876,
         inStock: true,
         priceRange: "$400-$600",
-        views: 7654,
-        clicks: 1432,
-        purchases: 234,
-        embedding: []
     },
     {
         name: "Harbinger Power Lifting Straps",
@@ -130,10 +104,6 @@ const sportsProducts = [
         reviewCount: 3421,
         inStock: true,
         priceRange: "$10-$20",
-        views: 11234,
-        clicks: 2876,
-        purchases: 1087,
-        embedding: []
     },
     {
         name: "Coleman 6-Person Camping Tent",
@@ -147,10 +117,6 @@ const sportsProducts = [
         reviewCount: 2987,
         inStock: true,
         priceRange: "$150-$200",
-        views: 13456,
-        clicks: 3124,
-        purchases: 765,
-        embedding: []
     },
     {
         name: "Head MX Spark Elite Tennis Racket",
@@ -164,10 +130,6 @@ const sportsProducts = [
         reviewCount: 1234,
         inStock: true,
         priceRange: "$150-$200",
-        views: 6789,
-        clicks: 1456,
-        purchases: 432,
-        embedding: []
     },
     {
         name: "TRX ALL-IN-ONE Suspension Training System",
@@ -181,10 +143,6 @@ const sportsProducts = [
         reviewCount: 5432,
         inStock: true,
         priceRange: "$150-$200",
-        views: 21543,
-        clicks: 4876,
-        purchases: 1876,
-        embedding: []
     },
     {
         name: "Garmin Forerunner 245 GPS Running Watch",
@@ -198,10 +156,6 @@ const sportsProducts = [
         reviewCount: 6789,
         inStock: true,
         priceRange: "$250-$350",
-        views: 28765,
-        clicks: 6234,
-        purchases: 2134,
-        embedding: []
     },
     {
         name: "Spalding NBA Official Game Basketball",
@@ -215,10 +169,6 @@ const sportsProducts = [
         reviewCount: 2345,
         inStock: true,
         priceRange: "$100-$200",
-        views: 14532,
-        clicks: 3456,
-        purchases: 987,
-        embedding: []
     },
     {
         name: "Bowflex SelectTech 552 Adjustable Dumbbells",
@@ -232,10 +182,6 @@ const sportsProducts = [
         reviewCount: 8765,
         inStock: false,
         priceRange: "$300-$400",
-        views: 34567,
-        clicks: 7654,
-        purchases: 2876,
-        embedding: []
     },
     {
         name: "Under Armour HeatGear Compression Shirt",
@@ -249,10 +195,6 @@ const sportsProducts = [
         reviewCount: 4321,
         inStock: true,
         priceRange: "$30-$40",
-        views: 16789,
-        clicks: 3987,
-        purchases: 1432,
-        embedding: []
     },
     {
         name: "Razor A5 Lux Kick Scooter",
@@ -266,10 +208,6 @@ const sportsProducts = [
         reviewCount: 2109,
         inStock: true,
         priceRange: "$100-$150",
-        views: 9876,
-        clicks: 2234,
-        purchases: 654,
-        embedding: []
     },
     {
         name: "Everlast Pro Style Training Boxing Gloves",
@@ -283,10 +221,6 @@ const sportsProducts = [
         reviewCount: 3567,
         inStock: true,
         priceRange: "$40-$50",
-        views: 12345,
-        clicks: 2987,
-        purchases: 876,
-        embedding: []
     },
     {
         name: "Fitbit Charge 5 Fitness Tracker",
@@ -300,10 +234,6 @@ const sportsProducts = [
         reviewCount: 9876,
         inStock: true,
         priceRange: "$100-$200",
-        views: 32145,
-        clicks: 7123,
-        purchases: 2543,
-        embedding: []
     },
     {
         name: "Hydroflask 32 oz Water Bottle",
@@ -317,10 +247,6 @@ const sportsProducts = [
         reviewCount: 12456,
         inStock: true,
         priceRange: "$40-$50",
-        views: 24567,
-        clicks: 5678,
-        purchases: 2109,
-        embedding: []
     },
     {
         name: "CAP Barbell Olympic Weight Set - 300 lbs",
@@ -334,10 +260,6 @@ const sportsProducts = [
         reviewCount: 2876,
         inStock: true,
         priceRange: "$350-$450",
-        views: 11234,
-        clicks: 2345,
-        purchases: 543,
-        embedding: []
     },
     {
         name: "Schwinn IC4 Indoor Cycling Bike",
@@ -351,10 +273,6 @@ const sportsProducts = [
         reviewCount: 5432,
         inStock: true,
         priceRange: "$800-$1000",
-        views: 19876,
-        clicks: 3987,
-        purchases: 876,
-        embedding: []
     },
     {
         name: "Franklin Sports Soccer Goal Set",
@@ -368,10 +286,6 @@ const sportsProducts = [
         reviewCount: 1567,
         inStock: true,
         priceRange: "$70-$90",
-        views: 7654,
-        clicks: 1678,
-        purchases: 432,
-        embedding: []
     },
     {
         name: "Titleist Pro V1 Golf Balls - 1 Dozen",
@@ -385,10 +299,6 @@ const sportsProducts = [
         reviewCount: 6789,
         inStock: true,
         priceRange: "$50-$60",
-        views: 15432,
-        clicks: 3654,
-        purchases: 1876,
-        embedding: []
     },
     {
         name: "SKLZ Gold Flex Strength and Tempo Trainer",
@@ -402,10 +312,6 @@ const sportsProducts = [
         reviewCount: 987,
         inStock: true,
         priceRange: "$30-$50",
-        views: 5432,
-        clicks: 1123,
-        purchases: 298,
-        embedding: []
     },
     {
         name: "Reebok CrossFit Nano X2 Training Shoes",
@@ -419,10 +325,6 @@ const sportsProducts = [
         reviewCount: 3210,
         inStock: true,
         priceRange: "$130-$150",
-        views: 14567,
-        clicks: 3234,
-        purchases: 987,
-        embedding: []
     }
 ];
 

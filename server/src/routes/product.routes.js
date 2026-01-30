@@ -6,6 +6,6 @@ const productRouter = express.Router();
 
 productRouter.use(protectRoute)
 productRouter.post("/", createProduct);
-// productRouter.post("/bulk", createBulkProducts); one time use
+productRouter.post("/bulk", createBulkProducts); //one time use
 
 module.exports = productRouter;

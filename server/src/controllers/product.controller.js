@@ -28,14 +28,34 @@ const createProduct = asyncHandler(async (req, res) => {
 
 
 
-const createBulkProducts = asyncHandler(async (req, res) => {
+const createBulkProducts = asyncHandler(async (req, res, next) => {
 	try {
-		const products = sportsProducts
-		const createdProducts = await productModel.insertMany(products);
-		
-		if(_.isEmpty(createdProducts)) {
+		const products = sportsProducts;
+
+		const productsWithEmbeddings = await Promise.all(
+			products.map(async (product) => {
+				const textForEmbedding = `
+          ${product.name}. 
+          ${product.description}. 
+          Category: ${product.category}. 
+          Tags: ${product.tags.join(", ")}
+        `;
+
+				const embedding = await generateEmbedding(textForEmbedding);
+
+				return {
+					...product,
+					embedding,
+				};
+			})
+		);
+
+		const createdProducts = await productModel.insertMany(productsWithEmbeddings);
+
+		if (_.isEmpty(createdProducts)) {
 			throw new ApiError("Failed to create products", 400);
 		}
+
 		res.status(201).json(createdProducts);
 	} catch (error) {
 		next(error);
