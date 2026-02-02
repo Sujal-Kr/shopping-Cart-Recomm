@@ -1,7 +1,8 @@
 const express = require("express");
+const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config();
-const { PORT } = require("./constants/config");
+const { PORT, corsOptions } = require("./constants/config");
 const connectDB = require("./config/mongo");
 const handleApiError = require("./middleware/error");
 const cookieParser = require("cookie-parser");
@@ -12,14 +13,13 @@ const app = express();
 connectDB();
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors(corsOptions));
 
 app.use(globalLimiter);
 
 app.use("/api/v1", routes);
 
 app.use(handleApiError);
-
-
 
 
 app.listen(PORT, () => {

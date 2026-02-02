@@ -11,6 +11,7 @@ const sendToken = (user, statusCode, res) => {
         success: true,
         token,
         user: userData,
+        message: `Welcome ${user.name}`,
     });
 };
 

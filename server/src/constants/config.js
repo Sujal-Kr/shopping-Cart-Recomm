@@ -4,9 +4,15 @@ const SECRET_KEY = process.env.SECRET_KEY;
 const OPEN_AI_KEY = process.env.OPEN_AI_KEY;
 
 const options = {
-    httpOnly: true,
+    maxAge: 1000 * 24 * 60 * 60 * 2,
     secure: true,
-    maxAge: 1000 * 60 * 60 * 24
+    httpOnly: true,
+    // sameSite:"none"
 }
 
-module.exports = { PORT, MONGO_URI, SECRET_KEY, OPEN_AI_KEY, options };
+const corsOptions={
+    origin:["http://localhost:5173","http://localhost:5174"],
+    credentials:true
+}
+
+module.exports = { PORT, MONGO_URI, SECRET_KEY, OPEN_AI_KEY, options,corsOptions };

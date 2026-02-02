@@ -3,6 +3,8 @@ const _ = require("lodash");
 const sendToken = require("../utils/utility");
 const asyncHandler = require("../utils/asyncHandler");
 const { options } = require("../constants/config");
+const bcrypt = require("bcrypt");
+const ApiError = require("../utils/error");
 
 const login = asyncHandler(async (req, res, next) => {
     try {
@@ -59,5 +61,18 @@ const logout = asyncHandler(async (req, res, next) => {
     }
 })
 
+const profile = asyncHandler(async (req, res, next) => {
+    try {
+        const user = await userModel.findById(req.user);
+        res.status(200).json({
+            success: true,
+            message:"Profile fetched successfully",
+            user,
+        })
+    } catch (err) {
+        next(err);
+    }
+})
 
-module.exports = { login, signup, logout }
+
+module.exports = { login, signup, logout, profile }
