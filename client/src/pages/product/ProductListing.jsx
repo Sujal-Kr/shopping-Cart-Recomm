@@ -1,6 +1,12 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Search, SlidersHorizontal, Package } from "lucide-react";
+import {
+  Search,
+  SlidersHorizontal,
+  Package,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -15,7 +21,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 import Applayout from "../../_components/layout/Applayout";
 import Product from "../../_components/card/Product";
-import { sportsProducts } from "../../constants/data";
+import { useProducts } from "../../hooks/api";
 
 // Skeleton component for loading state
 const ProductSkeleton = () => (
@@ -76,14 +82,26 @@ const sortOptions = [
 
 const ITEMS_PER_PAGE = 8;
 
+// Convert sortBy to API format
+const getSortParams = (sortBy) => {
+  switch (sortBy) {
+    case "price-low":
+      return { sortField: "price", sortDirection: 1 };
+    case "price-high":
+      return { sortField: "price", sortDirection: -1 };
+    case "rating":
+      return { sortField: "rating", sortDirection: -1 };
+    case "newest":
+      return { sortField: "createdAt", sortDirection: -1 };
+    default:
+      return { sortField: "createdAt", sortDirection: -1 };
+  }
+};
+
 const ProductListing = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(1);
 
+  // Filter states
   const [searchQuery, setSearchQuery] = useState(
     searchParams.get("search") || "",
   );
@@ -91,115 +109,25 @@ const ProductListing = () => {
     searchParams.get("category") || "All",
   );
   const [sortBy, setSortBy] = useState(searchParams.get("sort") || "featured");
+  const [page, setPage] = useState(parseInt(searchParams.get("page")) || 1);
 
-  const observerRef = useRef(null);
-  const loadMoreRef = useRef(null);
+  // Build API params
+  const sortParams = getSortParams(sortBy);
+  const apiParams = {
+    page,
+    limit: ITEMS_PER_PAGE,
+    ...sortParams,
+  };
+  if (searchQuery) apiParams.search = searchQuery;
+  if (category && category !== "All") apiParams.category = category;
 
-  // Simulate API call with filtering and pagination
-  const fetchProducts = useCallback(
-    (pageNum, isNewSearch = false) => {
-      if (isNewSearch) {
-        setLoading(true);
-      } else {
-        setLoadingMore(true);
-      }
+  // Call API
+  const { data, loading } = useProducts(apiParams);
 
-      // Simulate API delay
-      setTimeout(() => {
-        let filteredProducts = [...sportsProducts];
-
-        // Apply search filter
-        if (searchQuery) {
-          filteredProducts = filteredProducts.filter(
-            (p) =>
-              p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              p.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              p.description.toLowerCase().includes(searchQuery.toLowerCase()),
-          );
-        }
-
-        // Apply category filter
-        if (category && category !== "All") {
-          filteredProducts = filteredProducts.filter((p) =>
-            p.category.toLowerCase().includes(category.toLowerCase()),
-          );
-        }
-
-        // Apply sorting
-        switch (sortBy) {
-          case "price-low":
-            filteredProducts.sort((a, b) => a.price - b.price);
-            break;
-          case "price-high":
-            filteredProducts.sort((a, b) => b.price - a.price);
-            break;
-          case "rating":
-            filteredProducts.sort((a, b) => b.rating - a.rating);
-            break;
-          case "newest":
-            filteredProducts.reverse();
-            break;
-          default:
-            break;
-        }
-
-        // Paginate
-        const startIndex = (pageNum - 1) * ITEMS_PER_PAGE;
-        const endIndex = startIndex + ITEMS_PER_PAGE;
-        const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
-
-        if (isNewSearch) {
-          setProducts(paginatedProducts);
-        } else {
-          setProducts((prev) => [...prev, ...paginatedProducts]);
-        }
-
-        setHasMore(endIndex < filteredProducts.length);
-        setLoading(false);
-        setLoadingMore(false);
-      }, 800);
-    },
-    [searchQuery, category, sortBy],
-  );
-
-  // Initial load and filter changes
+  // When filters change, reset to page 1
   useEffect(() => {
     setPage(1);
-    fetchProducts(1, true);
   }, [searchQuery, category, sortBy]);
-
-  // Infinite scroll observer
-  useEffect(() => {
-    if (loading) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMore && !loadingMore) {
-          setPage((prev) => prev + 1);
-        }
-      },
-      { threshold: 0.1 },
-    );
-
-    if (loadMoreRef.current) {
-      observer.observe(loadMoreRef.current);
-    }
-
-    observerRef.current = observer;
-
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-    };
-  }, [loading, hasMore, loadingMore]);
-
-  // Load more when page changes
-  useEffect(() => {
-    if (page > 1) {
-      fetchProducts(page, false);
-    }
-  }, [page]);
 
   // Update URL params
   useEffect(() => {
@@ -207,13 +135,30 @@ const ProductListing = () => {
     if (searchQuery) params.set("search", searchQuery);
     if (category !== "All") params.set("category", category);
     if (sortBy !== "featured") params.set("sort", sortBy);
+    if (page > 1) params.set("page", page.toString());
     setSearchParams(params);
-  }, [searchQuery, category, sortBy, setSearchParams]);
+  }, [searchQuery, category, sortBy, page, setSearchParams]);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    // Search is already reactive via state
   };
+
+  const handlePreviousPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const handleNextPage = () => {
+    if (data?.hasMore) {
+      setPage(page + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const products = data?.products || [];
+  const totalPages = data?.totalPages || 0;
 
   return (
     <Applayout>
@@ -225,6 +170,11 @@ const ProductListing = () => {
           </h1>
           <p className="text-gray-500">
             Discover our collection of premium products
+            {data?.totalCount > 0 && (
+              <span className="ml-2 text-sm bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">
+                {data.totalCount} products
+              </span>
+            )}
           </p>
         </div>
 
@@ -303,7 +253,7 @@ const ProductListing = () => {
         )}
 
         {/* Product Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 min-h-[400px]">
           {loading ? (
             // Loading skeletons
             [...Array(8)].map((_, i) => <ProductSkeleton key={i} />)
@@ -314,39 +264,42 @@ const ProductListing = () => {
             // Products list
             products.map((product, index) => (
               <Product
-                key={`${product.name}-${index}`}
+                key={product._id || `${product.name}-${index}`}
                 index={index}
+                id={product._id}
                 {...product}
               />
             ))
           )}
-
-          {/* Loading more skeletons */}
-          {loadingMore &&
-            [...Array(4)].map((_, i) => (
-              <ProductSkeleton key={`loading-${i}`} />
-            ))}
         </div>
 
-        {/* Load more trigger */}
-        {hasMore && !loading && (
-          <div
-            ref={loadMoreRef}
-            className="h-20 flex items-center justify-center"
-          >
-            {loadingMore && (
-              <div className="flex items-center gap-2 text-gray-500">
-                <div className="w-5 h-5 border-2 border-violet-600 border-t-transparent rounded-full animate-spin" />
-                Loading more products...
-              </div>
-            )}
-          </div>
-        )}
+        {/* Pagination */}
+        {!loading && products.length > 0 && (
+          <div className="mt-8 flex items-center justify-between border-t border-gray-200 pt-6">
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={handlePreviousPage}
+                disabled={page === 1}
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Previous
+              </Button>
+              <Button
+                onClick={handleNextPage}
+                disabled={!data?.hasMore}
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                Next
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
 
-        {/* End of results */}
-        {!hasMore && products.length > 0 && (
-          <div className="text-center py-8 text-gray-500">
-            You've reached the end of the list
+            <div className="text-sm text-gray-600">
+              Page {page} {totalPages > 0 && `of ${totalPages}`}
+            </div>
           </div>
         )}
       </div>

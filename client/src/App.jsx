@@ -16,6 +16,10 @@ const SignUp = lazy(() => import("./pages/signup/SignUp"));
 const ProductPage = lazy(() => import("./pages/product/Product"));
 const ProductListing = lazy(() => import("./pages/product/ProductListing"));
 const Cart = lazy(() => import("./pages/cart/Cart"));
+const Checkout = lazy(() => import("./pages/checkout/Checkout"));
+const OrderSuccess = lazy(() => import("./pages/order/OrderSuccess"));
+const OrderList = lazy(() => import("./pages/order/OrderList"));
+const NotFound = lazy(() => import("./_components/misc/NotFound"));
 
 const App = () => {
   const { user, loader } = useSelector((state) => state.auth);
@@ -48,11 +52,18 @@ const App = () => {
           <Route path="/products" element={<ProductListing />} />
           <Route path="/product/:id" element={<ProductPage />} />
           <Route path="/cart" element={<Cart />} />
-          <Route element={<ProtectRoute user={user} />}></Route>
+          <Route element={<ProtectRoute user={user} />}>
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/order/success" element={<OrderSuccess />} />
+            <Route path="/orders" element={<OrderList />} />
+            <Route path="/orders/:id" element={<OrderSuccess />} />
+          </Route>
           <Route element={<ProtectRoute user={!user} redirect="/" />}>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
           </Route>
+          {/* Catch-all route for 404 */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
     </>

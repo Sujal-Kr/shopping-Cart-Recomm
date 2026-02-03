@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Applayout from "../../_components/layout/Applayout";
 import { useProduct, useAddToCart } from "../../hooks/api";
-import { sportsProducts } from "../../constants/data";
+import Loading from "../../_components/misc/Loading";
 
 const ProductPage = () => {
   const { id } = useParams();
@@ -25,11 +25,10 @@ const ProductPage = () => {
   const [isWishlisted, setIsWishlisted] = useState(false);
 
   const { addToCart, loading: addingToCart } = useAddToCart();
+  const { data, loading, error } = useProduct(id);
 
-  // For demo, use static data. Replace with useProduct(id) for API
-  const product =
-    sportsProducts.find((p, index) => index === parseInt(id)) ||
-    sportsProducts[0];
+  // Extract product from API response
+  const product = data?.product;
 
   // Demo images array (in real app, this would come from API)
   const images = [
@@ -47,7 +46,7 @@ const ProductPage = () => {
   };
 
   const handleAddToCart = async () => {
-    const result = await addToCart(
+    await addToCart(
       { product: id, quantity },
       {
         onSuccess: () => toast.success(`Added ${quantity} item(s) to cart!`),
@@ -75,11 +74,27 @@ const ProductPage = () => {
     ));
   };
 
-  if (!product) {
+  // Loading state
+  if (loading) {
+    return <Loading />;
+  }
+
+  // Error or not found
+  if (error || !product) {
     return (
       <Applayout>
         <div className="min-h-screen flex items-center justify-center">
-          <p className="text-gray-500">Product not found</p>
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              {error ? "Error Loading Product" : "Product Not Found"}
+            </h2>
+            <p className="text-gray-500 mb-4">
+              {error || "The product you're looking for doesn't exist."}
+            </p>
+            <Link to="/products">
+              <Button variant="outline">Back to Products</Button>
+            </Link>
+          </div>
         </div>
       </Applayout>
     );
@@ -151,7 +166,7 @@ const ProductPage = () => {
             <div className="flex items-center gap-3">
               <div className="flex">{renderStars(product.rating)}</div>
               <span className="text-gray-600">
-                {product.rating} ({product.reviewCount?.toLocaleString()}{" "}
+                {product.rating} ({product.reviewCount?.toLocaleString() || 0}{" "}
                 reviews)
               </span>
             </div>
@@ -174,7 +189,7 @@ const ProductPage = () => {
             </p>
 
             {/* Tags */}
-            {product.tags && (
+            {product.tags && product.tags.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {product.tags.map((tag) => (
                   <span
@@ -207,7 +222,7 @@ const ProductPage = () => {
               <div className="flex items-center border border-gray-300 rounded-lg">
                 <button
                   onClick={() => handleQuantityChange("decrease")}
-                  className="p-3 hover:bg-gray-100 transition-colors"
+                  className="p-3 hover:bg-gray-100 transition-colors disabled:opacity-50"
                   disabled={quantity <= 1}
                 >
                   <Minus className="w-4 h-4" />
@@ -280,7 +295,7 @@ const ProductPage = () => {
                 Description
               </button>
               <button className="py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
-                Reviews ({product.reviewCount})
+                Reviews ({product.reviewCount || 0})
               </button>
               <button className="py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
                 Shipping Info
@@ -292,10 +307,9 @@ const ProductPage = () => {
               {product.description}
               <br />
               <br />
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
+              This product is crafted with attention to detail and quality.
+              Perfect for everyday use and built to last. Experience premium
+              quality and exceptional value with every purchase.
             </p>
           </div>
         </div>

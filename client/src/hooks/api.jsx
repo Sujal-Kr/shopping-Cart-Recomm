@@ -32,7 +32,7 @@ export const useFetch = (endpoint, options = {}) => {
       setError(null);
       const response = await api.get(endpoint, { params });
       setData(response.data);
-      onSuccess?.(response.data)                                                                                                                                                                                                              ;
+      onSuccess?.(response.data);
     } catch (err) {
       const errorMessage = err.response?.data?.message || err.message;
       setError(errorMessage);
@@ -180,8 +180,8 @@ export const useAddToCart = () => {
 
   const addToCart = useCallback(
     (productData, options) => {
-        console.log("addToCart",productData);
-        mutate("/cart/", productData, options);
+      console.log("addToCart", productData);
+      mutate("/cart/", productData, options);
     },
     [mutate],
   );
@@ -233,6 +233,22 @@ export const useSubscribeNewsletter = () => {
   );
 
   return { subscribe, ...rest };
+};
+
+// ============================================
+// Payment / Orders
+// ============================================
+
+// Get all user orders
+export const useUserOrders = (params = {}) => {
+  return useFetch("/payment/orders", { params });
+};
+
+// Get specific order by ID
+export const useOrderById = (orderId) => {
+  return useFetch(`/payment/orders/${orderId}`, {
+    enabled: !!orderId,
+  });
 };
 
 // Export axios instance for custom requests

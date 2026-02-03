@@ -239,9 +239,11 @@ const Cart = () => {
                     </div>
                   </div>
 
-                  <Button className="w-full mt-6 bg-violet-600 hover:bg-violet-700 text-white py-6 text-lg font-medium">
-                    Proceed to Checkout
-                  </Button>
+                  <Link to="/checkout" className="block">
+                    <Button className="w-full mt-6 bg-violet-600 hover:bg-violet-700 text-white py-6 text-lg font-medium">
+                      Proceed to Checkout
+                    </Button>
+                  </Link>
 
                   {/* Trust badges */}
                   <div className="flex items-center justify-center gap-4 mt-6 pt-6 border-t border-gray-200">
