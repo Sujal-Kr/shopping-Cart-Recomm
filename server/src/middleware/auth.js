@@ -10,7 +10,7 @@ const protectRoute = asyncHandler(async (req, res, next) => {
             throw new ApiError("Unauthorized", 401);
         }
         const decodedToken = jwt.verify(token, SECRET_KEY)
-        req.user = decodedToken;
+        req.user = decodedToken._id;
         next();
     } catch (error) {
         next(error);

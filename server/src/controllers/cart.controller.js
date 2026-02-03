@@ -17,8 +17,7 @@ const addToCart = asyncHandler(async (req, res, next) => {
 		if (_.isEmpty(cart)) {
 			const newCart = new cartModel({
 				user: req.user._id,
-				product,
-				quantity,
+				items: [{ product, quantity }],
 			});
 			await newCart.save();
 

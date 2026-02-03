@@ -72,29 +72,47 @@ const getAllProducts = asyncHandler(async (req, res, next) => {
 		const skip = (page - 1) * limit;
 		const category = req.query.category || "";
 		const search = req.query.search || "";
-		const sortField = req.query.sort || "createdAt";
-		const sortDirection = req.query.direction || -1;
-
-
+		const sortField = req.query.sortField || "createdAt";
+		const sortDirection = parseInt(req.query.sortDirection) || -1;
+		
 		// Filters
 		const query = {};
 		if (!_.isEmpty(category) && category !== "All") {
 			query.category = category;
 		}
 		if (!_.isEmpty(search)) {
-			query.name = { $regex: search, $options: "i" };
+			const searchEmbedding = await generateEmbedding(search);
+			query.embedding = {
+				$near: {
+					$geometry: {
+						type: "Point",
+						coordinates: searchEmbedding,
+					},
+					$maxDistance: 0.5,
+				},
+			};
 		}
 		// TODO: ADD more filters
 		const products = await productModel
 			.find(query)
+			.select("-embedding")
 			.skip(skip)
 			.limit(limit)
 			.sort({ [sortField]: sortDirection });
 
 
-		res.status(200).json({
+		const totalProductsCount = await productModel.countDocuments(query);
+		const totalPages = Math.ceil(totalProductsCount / limit);
+		const hasMore = page < totalPages;
+
+		return res.status(200).json({
 			success: true,
 			products,
+			totalCount: totalProductsCount,
+			page,
+			limit,
+			hasMore,
+			totalPages,
 			message: "Products fetched successfully"
 		});
 	} catch (error) {
@@ -103,4 +121,22 @@ const getAllProducts = asyncHandler(async (req, res, next) => {
 });
 
 
-module.exports = { createProduct, createBulkProducts, getAllProducts };
+
+const getProductById = asyncHandler(async (req, res, next) => {
+	try {
+		const { id } = req.params;
+		const product = await productModel.findById(id).select("-embedding");
+		if (!product) {
+			throw new ApiError("Product not found", 404);
+		}
+		return res.status(200).json({
+			success: true,
+			product,
+			message: "Product fetched successfully"
+		});
+	} catch (error) {
+		next(error);
+	}
+});
+
+module.exports = { createProduct, createBulkProducts, getAllProducts, getProductById };

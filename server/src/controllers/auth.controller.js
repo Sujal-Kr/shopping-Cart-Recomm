@@ -64,6 +64,7 @@ const logout = asyncHandler(async (req, res, next) => {
 const profile = asyncHandler(async (req, res, next) => {
     try {
         const user = await userModel.findById(req.user);
+        console.log("id user",req.user)
         res.status(200).json({
             success: true,
             message:"Profile fetched successfully",
