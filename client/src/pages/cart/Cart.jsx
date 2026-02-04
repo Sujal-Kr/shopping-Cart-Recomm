@@ -16,6 +16,7 @@ import {
   decrementQuantity,
   clearCart,
 } from "../../redux/slice/cart";
+import { useClearCart } from "../../hooks/api";
 
 // Empty cart component
 const EmptyCart = () => (
@@ -122,6 +123,8 @@ const Cart = () => {
   const cartItems = useSelector(selectCartItems);
   const cartTotal = useSelector(selectCartTotal);
 
+  const { clearCart: clearCartAPI } = useClearCart();
+
   const handleIncrement = (productName) => {
     dispatch(incrementQuantity(productName));
   };
@@ -135,9 +138,14 @@ const Cart = () => {
     toast.success("Item removed from cart");
   };
 
-  const handleClearCart = () => {
+  const handleClearCart = async () => {
     dispatch(clearCart());
-    toast.success("Cart cleared");
+    clearCartAPI(
+      {
+        onSuccess: () => toast.success("Cart cleared"),
+        onError: (error) => toast.error(error || "Failed to clear cart"),
+      },
+    );
   };
 
   const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);

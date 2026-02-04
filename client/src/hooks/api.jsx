@@ -180,7 +180,6 @@ export const useAddToCart = () => {
 
   const addToCart = useCallback(
     (productData, options) => {
-      console.log("addToCart", productData);
       mutate("/cart/", productData, options);
     },
     [mutate],
@@ -209,6 +208,17 @@ export const useUpdateCartItem = () => {
   );
 
   return { updateCartItem, ...rest };
+};
+
+export const useClearCart = () => {
+  const { mutate, ...rest } = useMutation("delete");
+
+  const clearCart = useCallback(
+    (options) => mutate("/cart/clear", {}, options),
+    [mutate],
+  );
+
+  return { clearCart, ...rest };
 };
 
 // Order mutations

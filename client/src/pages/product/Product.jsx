@@ -17,12 +17,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import Applayout from "../../_components/layout/Applayout";
 import { useProduct, useAddToCart } from "../../hooks/api";
 import Loading from "../../_components/misc/Loading";
+import { useDispatch } from "react-redux";
+import { addToCart as addToCartAction } from "../../redux/slice/cart";
 
 const ProductPage = () => {
   const { id } = useParams();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const dispatch = useDispatch();
 
   const { addToCart, loading: addingToCart } = useAddToCart();
   const { data, loading, error } = useProduct(id);
@@ -46,6 +49,24 @@ const ProductPage = () => {
   };
 
   const handleAddToCart = async () => {
+    dispatch(
+      addToCartAction({
+        product: {
+          id,
+          name: product.name,
+          price: product.price,
+          image: product.image,
+          rating: product.rating,
+          reviewCount: product.reviewCount,
+          inStock: product.inStock,
+          priceRange: product.priceRange,
+          views: product.views,
+          clicks: product.clicks,
+          purchases: product.purchases,
+        },
+        quantity,
+      }),
+    );
     await addToCart(
       { product: id, quantity },
       {

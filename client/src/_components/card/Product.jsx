@@ -6,7 +6,8 @@ import toast from "react-hot-toast";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import { addToCart } from "../../redux/slice/cart";
+import { addToCart as addToCartAction } from "../../redux/slice/cart";
+import { useAddToCart } from "../../hooks/api";
 
 const Product = ({
   _id,
@@ -24,6 +25,39 @@ const Product = ({
   const dispatch = useDispatch();
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const { addToCart: addToCartAPI } = useAddToCart();
+
+  
+  const handleAddToCart = async (product) => {
+    // Add to Redux cart (local state)
+    dispatch(
+      addToCartAction({
+        product: {
+          _id: product._id,
+          name: product.name,
+          image: product.image,
+          rating: product.rating,
+          price: product.price,
+          reviewCount: product.reviewCount,
+          brand: product.brand,
+          inStock: product.inStock,
+          description: product.description,
+        },
+        quantity: 1,
+      }),
+    );
+
+    // Add to backend cart (API)
+    await addToCartAPI(
+      { product: product._id, quantity: 1 },
+      {
+        onSuccess: () => toast.success(`${product.name} added to cart!`),
+        onError: (error) => toast.error(error || "Failed to add to cart"),
+      },
+    );
+  };
+
+  
 
   // Optimize Unsplash images - request smaller size
   const optimizedImage = image?.includes("unsplash.com")
@@ -130,23 +164,17 @@ const Product = ({
             disabled={!inStock}
             onClick={(e) => {
               e.preventDefault();
-              dispatch(
-                addToCart({
-                  product: {
-                    index,
-                    name,
-                    image,
-                    rating,
-                    price,
-                    reviewCount,
-                    brand,
-                    inStock,
-                    description,
-                  },
-                  quantity: 1,
-                }),
-              );
-              toast.success(`${name} added to cart!`);
+              handleAddToCart({
+                _id,
+                name,
+                image,
+                rating,
+                price,
+                reviewCount,
+                brand,
+                inStock,
+                description,
+              });
             }}
           >
             <AiOutlineShoppingCart className="text-lg" />
