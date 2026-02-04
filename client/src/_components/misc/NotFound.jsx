@@ -5,7 +5,7 @@ import { HiHome, HiShoppingBag, HiArrowLeft } from "react-icons/hi";
 
 const NotFound = () => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-violet-50 via-white to-indigo-50 relative overflow-hidden px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-violet-50 via-white to-indigo-50 relative overflow-hidden px-4">
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-violet-200 rounded-full opacity-30 blur-3xl" />
@@ -30,7 +30,7 @@ const NotFound = () => {
 
         {/* 404 Animation */}
         <div className="relative mb-8">
-          <div className="text-[150px] sm:text-[200px] font-black text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-indigo-600 leading-none select-none animate-pulse-slow">
+          <div className="text-[150px] sm:text-[200px] font-black text-transparent bg-clip-text bg-linear-to-r from-violet-600 to-indigo-600 leading-none select-none animate-pulse-slow">
             404
           </div>
 
@@ -91,7 +91,7 @@ const NotFound = () => {
         <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm">
           <Link
             to="/"
-            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-semibold rounded-xl shadow-lg shadow-violet-500/30 hover:shadow-xl hover:shadow-violet-500/40 hover:scale-105 transition-all duration-300"
+            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-linear-to-r from-violet-600 to-indigo-600 text-white font-semibold rounded-xl shadow-lg shadow-violet-500/30 hover:shadow-xl hover:shadow-violet-500/40 hover:scale-105 transition-all duration-300"
           >
             <HiHome className="text-xl" />
             Go Home

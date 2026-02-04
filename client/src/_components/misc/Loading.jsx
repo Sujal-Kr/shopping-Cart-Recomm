@@ -3,7 +3,7 @@ import { AiFillAmazonSquare } from "react-icons/ai";
 
 const Loading = () => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-violet-50 via-white to-indigo-50 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-violet-50 via-white to-indigo-50 relative overflow-hidden">
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-violet-200 rounded-full opacity-30 blur-3xl animate-pulse" />
@@ -63,7 +63,7 @@ const Loading = () => {
 
         {/* Progress bar */}
         <div className="w-48 h-1.5 bg-gray-200 rounded-full overflow-hidden mb-4">
-          <div className="h-full bg-gradient-to-r from-violet-500 to-indigo-500 rounded-full animate-loading-bar" />
+          <div className="h-full bg-linear-to-r from-violet-500 to-indigo-500 rounded-full animate-loading-bar" />
         </div>
 
         {/* Loading text */}
