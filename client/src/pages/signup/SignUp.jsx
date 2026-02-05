@@ -26,6 +26,8 @@ import {
 } from "react-icons/ai";
 import { useRegister } from "../../hooks/api";
 import { userExists } from "../../redux/slice/auth";
+import { authApi } from "../../api";
+import { useMutation } from "@tanstack/react-query";
 
 // Zod validation schema
 const signUpSchema = z
@@ -70,22 +72,22 @@ const SignUp = () => {
     },
   });
 
+  const signUpMutation = useMutation({
+    mutationFn: (values) => authApi.signup(values),
+    onSuccess: (data) => {
+      dispatch(userExists(data.user));
+      toast.success("Account created successfully!");
+      navigate("/");
+    },
+    onError: (error) => {
+      toast.error(error || "Registration failed. Please try again.");
+    },
+  });
+
   // Handle form submission
   const onSubmit = async (values) => {
     const { confirmPassword, ...userData } = values;
-
-    const result = await registerUser(userData, {
-      onSuccess: (data) => {
-        if (data.success) {
-          dispatch(userExists(data.user));
-          toast.success("Account created successfully!");
-          navigate("/");
-        }
-      },
-      onError: (error) => {
-        toast.error(error || "Registration failed. Please try again.");
-      },
-    });
+    signUpMutation.mutate(userData);
   };
 
   return (

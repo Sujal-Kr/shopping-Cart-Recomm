@@ -16,7 +16,7 @@ import {
   decrementQuantity,
   clearCart,
 } from "../../redux/slice/cart";
-import { useClearCart } from "../../hooks/api";
+import { cartApi } from "../../api";
 
 // Empty cart component
 const EmptyCart = () => (
@@ -123,29 +123,48 @@ const Cart = () => {
   const cartItems = useSelector(selectCartItems);
   const cartTotal = useSelector(selectCartTotal);
 
-  const { clearCart: clearCartAPI } = useClearCart();
+  const { mutate:clearCartAPI ,isPending } = useMutation({
+    mutationFn: () => cartApi.clearCart(),
+    onSuccess: () => toast.success("Cart cleared"),
+    onError: (error) => toast.error(error || "Failed to clear cart"),
+  });
+
+  const { mutate:incrementCartAPI ,isPending:incrementPending } = useMutation({
+    mutationFn: (productName) => cartApi.updateCartItem(productName),
+    onSuccess: () => toast.success("Item incremented"),
+    onError: (error) => toast.error(error || "Failed to increment item"),
+  });
+
+  const { mutate:decrementCartAPI ,isPending:decrementPending } = useMutation({
+    mutationFn: (productName) => cartApi.updateCartItem(productName),
+    onSuccess: () => toast.success("Item decremented"),
+    onError: (error) => toast.error(error || "Failed to decrement item"),
+  });
+
+  const { mutate:removeFromCartAPI ,isPending:removeFromCartPending } = useMutation({
+    mutationFn: (productName) => cartApi.removeFromCart(productName),
+    onSuccess: () => toast.success("Item removed"),
+    onError: (error) => toast.error(error || "Failed to remove item"),
+  });
 
   const handleIncrement = (productName) => {
     dispatch(incrementQuantity(productName));
+    incrementCartAPI(productName);
   };
 
   const handleDecrement = (productName) => {
     dispatch(decrementQuantity(productName));
+    decrementCartAPI(productName);
   };
 
   const handleRemove = (productName) => {
     dispatch(removeFromCart(productName));
-    toast.success("Item removed from cart");
+    removeFromCartAPI(productName);
   };
 
   const handleClearCart = async () => {
     dispatch(clearCart());
-    clearCartAPI(
-      {
-        onSuccess: () => toast.success("Cart cleared"),
-        onError: (error) => toast.error(error || "Failed to clear cart"),
-      },
-    );
+    clearCartAPI()
   };
 
   const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);

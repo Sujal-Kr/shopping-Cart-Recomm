@@ -23,8 +23,9 @@ import {
   AiOutlineMail,
   AiOutlineLock,
 } from "react-icons/ai";
-import { useLogin } from "../hooks/api";
+import { authApi } from "../api";
 import { userExists } from "../redux/slice/auth";
+import { useMutation } from "@tanstack/react-query";
 
 // Zod validation schema
 const loginSchema = z.object({
@@ -41,7 +42,6 @@ const loginSchema = z.object({
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { login, loading } = useLogin();
 
   // Initialize form with zod resolver
   const form = useForm({
@@ -52,20 +52,26 @@ const Login = () => {
     },
   });
 
+
+  const {mutate,isPending} = useMutation({
+    mutationFn: (values) => authApi.login(values),
+    onSuccess: (data) => {
+      dispatch(userExists(data.user));
+      toast.success("Login successful");
+      navigate("/");
+    },
+    onError: (error) => {
+      toast.error(
+        error?.response?.data?.message ||
+        error?.message ||
+        "Something went wrong",
+      );
+    },
+  });
+
   // Handle form submission
   const onSubmit = async (values) => {
-    const result = await login(values, {
-      onSuccess: (data) => {
-        if (data.success) {
-          dispatch(userExists(data.user));
-          toast.success("Welcome back!");
-          navigate("/");
-        }
-      },
-      onError: (error) => {
-        toast.error(error || "Login failed. Please try again.");
-      },
-    });
+    mutate(values);
   };
 
   return (
@@ -152,10 +158,10 @@ const Login = () => {
               {/* Submit Button */}
               <Button
                 type="submit"
-                disabled={loading}
+                disabled={isPending}
                 className="w-full bg-violet-600 hover:bg-violet-700 text-white py-5 font-medium transition-all duration-300 hover:shadow-lg"
               >
-                {loading ? (
+                {isPending ? (
                   <span className="flex items-center gap-2">
                     <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     Signing in...
